@@ -1,13 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import App from './App';
+import { Provider } from 'react-redux';
+import { store, persistor } from './setup/redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { setupAxios } from './setup';
+import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios';
 
+setupAxios(axios, store)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+    </PersistGate>
+    </Provider>
   </React.StrictMode>
 );
 
