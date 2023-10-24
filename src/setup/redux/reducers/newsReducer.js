@@ -23,6 +23,12 @@ const newsReducer = (state = initialState, action) => {
         ...state,
         newsDetail: action.payload,
       };
+    case "GET_CATEGORIES_AND_SOURCES":
+      return {
+        ...state,
+        categories: action.payload.categories,
+        sources: action.payload.sources,
+      };
     case "SET_PAGINATION":
       return {
         ...state,

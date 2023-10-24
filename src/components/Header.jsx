@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/Form";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa"; // Import the UserCircle icon from react-icons/fa
-import { Button } from "react-bootstrap";
+import { FaUserCircle } from "react-icons/fa";
 
 export const Header = ({ isAuthenticated, onLogout }) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -38,7 +36,7 @@ export const Header = ({ isAuthenticated, onLogout }) => {
             {/* Right-aligned items */}
             {isAuthenticated ? (
               <>
-                <Form className="d-flex">
+                {/* <Form className="d-flex">
                   <Form.Control
                     type="search"
                     placeholder="Search"
@@ -46,7 +44,7 @@ export const Header = ({ isAuthenticated, onLogout }) => {
                     aria-label="Search"
                   />
                   <Button variant="outline-success">Search</Button>
-                </Form>
+                </Form> */}
                 <NavDropdown
                   title={
                     <FaUserCircle

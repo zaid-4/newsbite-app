@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getNewsDetail } from "../../setup/redux/actions/newsAction";
-import Card from "react-bootstrap/Card";
 
 const NewsDetail = ({ newsDetail, getNewsDetail }) => {
   const { newsId } = useParams();

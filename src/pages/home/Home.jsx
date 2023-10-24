@@ -1,10 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { getAllNews } from "../../setup/redux/actions/newsAction";
+import {
+  getAllNews,
+  getAllCategoriesAndSources,
+} from "../../setup/redux/actions/newsAction";
 import Card from "react-bootstrap/Card";
 import ReactPaginate from "react-paginate";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import styles from "./home.module.css";
+import NewsFilter from "../../components/NewsFilter";
 
 const NewsCard = ({ news }) => (
   <Card className="mb-3 me-3" style={{ width: "350px" }}>
@@ -29,20 +35,82 @@ const truncateTitle = (title, maxLength) => {
     : title;
 };
 
-const Home = ({ newsList, pagination, getAllNews }) => {
-  const { currentPage, itemsPerPage, lastPage } = pagination;
+const Home = ({
+  newsList,
+  pagination,
+  categories,
+  sources,
+  getAllNews,
+  getAllCategoriesAndSources,
+}) => {
+  const { itemsPerPage, lastPage } = pagination;
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [delayedSearch, setDelayedSearch] = useState(null);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [newsFilters, setNewsFilters] = useState(null);
 
   const handlePageClick = ({ selected }) => {
-    getAllNews({ current_page: selected + 1, per_page: itemsPerPage });
+    getAllNews({ page: selected + 1, per_page: itemsPerPage });
+  };
+
+  const handleSearch = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    clearTimeout(delayedSearch);
+
+    if (term.length > 3 || term.length === 0) {
+      setDelayedSearch(
+        setTimeout(() => {
+          getAllNews({ page: 1, keyword: term });
+        }, 1000)
+      );
+    }
+  };
+
+  const makeOptions = (array) => {
+    return array?.map((item) => {
+      return { label: item.name, value: item.id };
+    });
+  };
+
+  const categoryOptions = makeOptions(categories);
+  const sourceOptions = makeOptions(sources);
+
+  const openFilterModal = () => {
+    setShowFilterModal(true);
+  };
+
+  const closeFilterModal = () => {
+    setShowFilterModal(false);
   };
 
   useEffect(() => {
-    // Fetch news data when the component mounts
-    getAllNews({ current_page: 1, per_page: itemsPerPage });
-  }, [getAllNews, itemsPerPage]);
+    getAllNews(newsFilters);
+  }, [newsFilters]);
+
+  useEffect(() => {
+    getAllNews();
+    getAllCategoriesAndSources();
+  }, [getAllNews, getAllCategoriesAndSources]);
 
   return (
     <>
+      <div className={`w-100 d-flex justify-content-between mb-4`}>
+        <Form.Group className="mb-0">
+          <Form.Control
+            type="text"
+            placeholder="Search News..."
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </Form.Group>
+        <Button variant="primary" onClick={openFilterModal}>
+          Filter
+        </Button>
+      </div>
+
       <div className={`w-100 d-flex flex-wrap justify-content-center mb-5`}>
         {newsList.map((news) => (
           <NewsCard key={news.id} news={news} />
@@ -62,6 +130,18 @@ const Home = ({ newsList, pagination, getAllNews }) => {
         disabledClassName={styles.paginationLinkDisabled}
         activeClassName={styles.paginationLinkActive}
       />
+
+      <NewsFilter
+        show={showFilterModal}
+        onHide={closeFilterModal}
+        categories={categoryOptions}
+        sources={sourceOptions}
+        filterValues={newsFilters}
+        onSubmit={(values) => {
+          setNewsFilters(values);
+          closeFilterModal();
+        }}
+      />
     </>
   );
 };
@@ -69,6 +149,11 @@ const Home = ({ newsList, pagination, getAllNews }) => {
 const mapStateToProps = (state) => ({
   newsList: state.news.newsList,
   pagination: state.news.pagination,
+  categories: state.news.categories,
+  sources: state.news.sources,
 });
 
-export default connect(mapStateToProps, { getAllNews })(Home);
+export default connect(mapStateToProps, {
+  getAllNews,
+  getAllCategoriesAndSources,
+})(Home);

@@ -10,7 +10,7 @@ import axios from "axios";
 const API_URL = "http://127.0.0.1:8000/api";
 export const GET_NEWS_URL = `${API_URL}/news`;
 export const GET_NEWS_DETAIL_URL = `${API_URL}/news`;
-export const GET_CATEGORIES_AND_SOURCES_URL = `${API_URL}/news/categories-sources`;
+export const GET_CATEGORIES_AND_SOURCES_URL = `${API_URL}/categories-sources`;
 
 // Action creators
 
@@ -20,7 +20,9 @@ export const getAllNews = (params) => {
     try {
       dispatch({ type: SET_LOADING, payload: true });
       const res = await axios
-        .get(`${GET_NEWS_URL}?page=${params.current_page}`, params)
+        .get(GET_NEWS_URL, {
+          params: params,
+        })
         .then((res) => res.data);
       if (res) {
         const paginationData = {
@@ -67,7 +69,9 @@ export const getAllCategoriesAndSources = () => {
   return async (dispatch) => {
     try {
       dispatch({ type: SET_LOADING, payload: true });
-      const res = await axios.get(GET_NEWS_DETAIL_URL).then((res) => res.data);
+      const res = await axios
+        .get(GET_CATEGORIES_AND_SOURCES_URL)
+        .then((res) => res.data);
       if (res) {
         await dispatch({ type: GET_CATEGORIES_AND_SOURCES, payload: res });
         await dispatch({ type: SET_LOADING, payload: false });
