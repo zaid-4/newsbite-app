@@ -1,10 +1,11 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Home } from "../pages/Home";
+import Home from "../pages/home/Home";
 import { Login } from "../pages/authentication/Login";
 import { Register } from "../pages/authentication/Register";
 import UserProfile from "../pages/UserProfile";
+import NewsDetail from "../pages/news/NewsDetail";
 
 const PrivateRoutes = () => {
   const isAuthorized = useSelector(({ auth }) => auth.isAuthenticated);
@@ -22,6 +23,16 @@ const PrivateRoutes = () => {
         element={
           isAuthorized ? (
             <UserProfile />
+          ) : (
+            <Navigate to="/login" replace={true} />
+          )
+        }
+      />
+      <Route
+        path="/news/:newsId"
+        element={
+          isAuthorized ? (
+            <NewsDetail />
           ) : (
             <Navigate to="/login" replace={true} />
           )

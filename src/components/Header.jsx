@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
+import Form from "react-bootstrap/Form";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa"; // Import the UserCircle icon from react-icons/fa
+import { Button } from "react-bootstrap";
 
 export const Header = ({ isAuthenticated, onLogout }) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -35,36 +37,47 @@ export const Header = ({ isAuthenticated, onLogout }) => {
             {" "}
             {/* Right-aligned items */}
             {isAuthenticated ? (
-              <NavDropdown
-                title={
-                  <FaUserCircle
-                    size={24}
-                    onClick={toggleProfileDropdown}
-                    style={{ cursor: "pointer" }}
+              <>
+                <Form className="d-flex">
+                  <Form.Control
+                    type="search"
+                    placeholder="Search"
+                    className="me-2"
+                    aria-label="Search"
                   />
-                }
-                id="profile-dropdown"
-                show={showProfileDropdown}
-              >
-                <NavDropdown.Item
-                  onClick={toggleProfileDropdown}
-                  as={Link}
-                  to="/profile"
+                  <Button variant="outline-success">Search</Button>
+                </Form>
+                <NavDropdown
+                  title={
+                    <FaUserCircle
+                      size={24}
+                      onClick={toggleProfileDropdown}
+                      style={{ cursor: "pointer" }}
+                    />
+                  }
+                  id="profile-dropdown"
+                  show={showProfileDropdown}
                 >
-                  Profile
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  onClick={toggleProfileDropdown}
-                  as={Link}
-                  to="/preferences"
-                >
-                  Preferences
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={handleLogout} as={Link} to="/">
-                  Logout
-                </NavDropdown.Item>
-              </NavDropdown>
+                  <NavDropdown.Item
+                    onClick={toggleProfileDropdown}
+                    as={Link}
+                    to="/profile"
+                  >
+                    Profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={toggleProfileDropdown}
+                    as={Link}
+                    to="/preferences"
+                  >
+                    Preferences
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={handleLogout} as={Link} to="/">
+                    Logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </>
             ) : (
               <Nav.Link as={Link} to="/login">
                 Login

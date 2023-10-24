@@ -1,0 +1,43 @@
+/* Style for the black background when there's no thumbnail image */
+.blackBackground {
+    /* Add your styles for the black background here */
+    background-color: #000;
+  }
+
+/* Style for the source name in the center */
+.sourceName {
+/* Add your styles for the source name here */
+color: white;
+font-size: 18px;
+padding: 10px;
+text-align: center;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    cursor: pointer;
+}
+
+.pagination a {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    border: 1px solid #6c7ac9;
+    color: #6c7ac9;
+}
+
+.paginationLink {
+    font-weight: bold;
+}
+
+.paginationLinkActive a {
+    color: #fff;
+    background: #6c7ac9;
+}
+
+.paginationLinkDisabled a {
+    color: rgb(198, 197, 202);
+    border: 1px solid rgb(198, 197, 202);
+}
