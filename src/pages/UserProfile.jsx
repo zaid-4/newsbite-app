@@ -6,8 +6,9 @@ import { connect } from "react-redux";
 import { updateUserProfile } from "../setup/redux/actions/authAction";
 import { Button } from "react-bootstrap";
 import { MdOutlineKeyboardBackspace as BackArrow } from "react-icons/md";
+import Loader from "../components/Loader";
 
-const UserProfile = ({ user, updateUserProfile }) => {
+const UserProfile = ({ user, updateUserProfile, loading }) => {
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -41,6 +42,7 @@ const UserProfile = ({ user, updateUserProfile }) => {
 
   return (
     <div className="container">
+      <Loader loading={loading} />
       <h2>User Profile</h2>
       <div className="w-100 text-start mb-3">
         <Button variant="secondary" onClick={() => navigate(-1)}>
@@ -116,6 +118,7 @@ const FormField = ({ label, name, type }) => (
 const mapStateToProps = (state) => {
   return {
     user: state.auth.user,
+    loading: state.ui.loading,
   };
 };
 

@@ -1,62 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { getAllNews, getNewsMeta } from "../../setup/redux/actions/newsAction";
-import Card from "react-bootstrap/Card";
 import ReactPaginate from "react-paginate";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import styles from "./home.module.css";
 import NewsFilter from "../../components/NewsFilter";
-
-const NewsCard = ({ news }) => (
-  <Card className={`mb-5 ${styles.newsCard}`} style={{ width: "350px" }}>
-    {news.thumbnail_url ? (
-      <Card.Img
-        variant="top"
-        className={styles.thumbnail}
-        src={news.thumbnail_url}
-      />
-    ) : (
-      <div className={styles.noThumnail}>{news.source}</div>
-    )}
-    <Card.Body className="text-start d-flex flex-column justify-content-between">
-      <div>
-        <Card.Title>
-          <Link to={`/news/${btoa(news.id)}`} className="">
-            {truncateTitle(news.title, 100)}
-          </Link>
-        </Card.Title>
-        <Card.Text className="mb-2">{truncateTitle(news.slug, 120)}</Card.Text>
-      </div>
-      <Card.Text className="d-flex flex-column justify-content-between">
-        <span>
-          <b>Published At:</b> {news.published_at}
-        </span>
-        <span>
-          <b>Author:</b> {news?.author || "Unknown"}
-        </span>
-      </Card.Text>
-    </Card.Body>
-    <Card.Footer className="text-start">
-      <b>Source:</b>{" "}
-      <a
-        href={news.source_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-decoration-none"
-      >
-        {news.source}
-      </a>
-    </Card.Footer>
-  </Card>
-);
-
-const truncateTitle = (title, maxLength) => {
-  return title.length > maxLength
-    ? `${title.substring(0, maxLength)}...`
-    : title;
-};
+import Loader from "../../components/Loader";
+import { makeLabelOptions, makeOptions } from "../../utils/helpers";
+import { SearchBar } from "./SearchBar";
+import { NewsCard } from "./NewsCard";
 
 const Home = ({
   newsList,
@@ -70,11 +21,22 @@ const Home = ({
   loading,
 }) => {
   const { currentPage, itemsPerPage, lastPage } = pagination;
-
   const [searchTerm, setSearchTerm] = useState("");
   const [delayedSearch, setDelayedSearch] = useState(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [newsFilters, setNewsFilters] = useState(null);
+  const authorOptions = makeLabelOptions(authors);
+  const categoryOptions = makeOptions(categories);
+  const sourceOptions = makeOptions(sources);
+
+  useEffect(() => {
+    getAllNews(newsFilters, isAuthorized);
+  }, [newsFilters]);
+
+  useEffect(() => {
+    getAllNews({ page: currentPage }, isAuthorized);
+    getNewsMeta({}, isAuthorized);
+  }, [getAllNews, getNewsMeta, isAuthorized]);
 
   const handlePageClick = ({ selected }) => {
     getAllNews({ page: selected + 1, per_page: itemsPerPage }, isAuthorized);
@@ -83,7 +45,6 @@ const Home = ({
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-
     clearTimeout(delayedSearch);
 
     if (term.length > 3 || term.length === 0) {
@@ -95,70 +56,32 @@ const Home = ({
     }
   };
 
-  const makeOptions = (array) => {
-    return array?.map((item) => {
-      return { label: item.name, value: item.id };
-    });
-  };
-
-  const authorOptions = authors?.map((item) => {
-    return { label: item, value: item };
-  });
-
-  const categoryOptions = makeOptions(categories);
-  const sourceOptions = makeOptions(sources);
-
-  const openFilterModal = () => {
-    setShowFilterModal(true);
-  };
-
-  const closeFilterModal = () => {
-    setShowFilterModal(false);
-  };
-
-  useEffect(() => {
-    getAllNews(newsFilters, isAuthorized);
-  }, [newsFilters]);
-
-  useEffect(() => {
-    getAllNews({ page: currentPage }, isAuthorized);
-    getNewsMeta({}, isAuthorized);
-  }, [getAllNews, getNewsMeta, isAuthorized]);
-
   return (
     <>
-      <div className={`w-100 d-flex justify-content-between mb-4`}>
-        <Form.Group className="mb-0">
-          <Form.Control
-            type="text"
-            placeholder="Search News..."
-            value={searchTerm}
-            onChange={handleSearch}
-          />
-        </Form.Group>
-        <Button variant="primary" onClick={openFilterModal}>
-          Filter
-        </Button>
-        {loading && "Loading..."}
-      </div>
+      <Loader loading={loading} />
+      <SearchBar
+        searchTerm={searchTerm}
+        handleSearch={handleSearch}
+        setShowFilterModal={setShowFilterModal}
+      />
 
       <div className={`w-100 d-flex flex-wrap justify-content-between mb-5`}>
         {newsList.length > 0 ? (
           newsList.map((news) => <NewsCard key={news.id} news={news} />)
         ) : (
           <h3 className="mt-5 w-100 text-center">
-            No news available, please update your news prefrences
+            No news available, please update your news preferences
           </h3>
         )}
       </div>
       {lastPage > 1 && (
         <ReactPaginate
-          previousLabel={"Previous"}
+          previousLabel={"Prev"}
           nextLabel={"Next"}
           breakLabel={"..."}
           pageCount={lastPage}
           marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={3}
           onPageChange={handlePageClick}
           containerClassName={styles.pagination}
           previousLinkClassName={styles.paginationLink}
@@ -171,14 +94,14 @@ const Home = ({
 
       <NewsFilter
         show={showFilterModal}
-        onHide={closeFilterModal}
+        onHide={() => setShowFilterModal(false)}
         categories={categoryOptions}
         sources={sourceOptions}
         authors={authorOptions}
         filterValues={newsFilters}
         onSubmit={(values) => {
           setNewsFilters(values);
-          closeFilterModal();
+          setShowFilterModal(false);
         }}
       />
     </>

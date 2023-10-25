@@ -7,18 +7,26 @@ import { updateUserPrefrences } from "../setup/redux/actions/authAction";
 import { getNewsMeta } from "../setup/redux/actions/newsAction";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineKeyboardBackspace as BackArrow } from "react-icons/md";
+import Loader from "../components/Loader";
+import { makeLabelOptions, makeOptions } from "../utils/helpers";
 
 const UserPreferences = ({
   user,
   sources,
   categories,
   authors,
+  loading,
   updateUserPrefrences,
   getNewsMeta,
 }) => {
   useEffect(() => {
     getNewsMeta({ type: "all" });
   }, []);
+
+  const navigate = useNavigate();
+  const authorOptions = makeLabelOptions(authors);
+  const categoryOptions = makeOptions(categories);
+  const sourceOptions = makeOptions(sources);
   const preferences = user?.preferences;
   const initialValues = {
     favorite_sources: preferences?.favorite_sources || [],
@@ -26,27 +34,13 @@ const UserPreferences = ({
     favorite_authors: preferences?.favorite_authors || [],
   };
 
-  const makeOptions = (array) => {
-    return array?.map((item) => {
-      return { label: item.name, value: item.id };
-    });
-  };
-  const navigate = useNavigate();
-
-  const authorOptions = authors?.map((item) => {
-    return { label: item, value: item };
-  });
-
-  const categoryOptions = makeOptions(categories);
-  const sourceOptions = makeOptions(sources);
-
   const onSubmit = (values) => {
     updateUserPrefrences(values);
-    console.log("User preferences submitted:", values);
   };
 
   return (
     <div className="container">
+      <Loader loading={loading} />
       <div className="w-100 text-start mb-3">
         <Button variant="secondary" onClick={() => navigate(-1)}>
           <BackArrow size={24} style={{ cursor: "pointer" }} /> {"Back"}
@@ -127,6 +121,7 @@ const mapStateToProps = (state) => {
     categories: state.news.categories,
     sources: state.news.sources,
     authors: state.news.authors,
+    loading: state.ui.loading,
   };
 };
 export default connect(mapStateToProps, { updateUserPrefrences, getNewsMeta })(

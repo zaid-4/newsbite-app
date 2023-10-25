@@ -13,8 +13,6 @@ const API_URL = configData.SERVER_URL;
 export const GET_NEWS_DETAIL_URL = `${API_URL}/news`;
 export const GET_NEWS_META_URL = `${API_URL}/news-meta`;
 
-// Action creators
-
 export const getAllNews = (params, isAuthorized) => {
   return async (dispatch) => {
     try {
@@ -24,7 +22,6 @@ export const getAllNews = (params, isAuthorized) => {
           params: params,
         })
         .then((res) => res.data);
-      console.log("RES", res.data);
       if (res) {
         const paginationData = {
           currentPage: res.current_page,

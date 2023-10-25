@@ -5,8 +5,9 @@ import { getNewsDetail } from "../setup/redux/actions/newsAction";
 import { Button } from "react-bootstrap";
 import { MdOutlineKeyboardBackspace as BackArrow } from "react-icons/md";
 import styles from "./home/home.module.css";
+import Loader from "../components/Loader";
 
-const NewsDetail = ({ newsDetail, getNewsDetail }) => {
+const NewsDetail = ({ newsDetail, getNewsDetail, loading }) => {
   const { newsId } = useParams();
   const [descriptionParagraphs, setDescriptionParagraphs] = useState([]);
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const NewsDetail = ({ newsDetail, getNewsDetail }) => {
 
   return (
     <div className="container mt-4">
+      <Loader loading={loading} />
       <h1 className="mb-4">{newsDetail.title}</h1>
       <div className="w-100 text-start mb-3">
         <Button variant="secondary" onClick={() => navigate(-1)}>
@@ -84,6 +86,7 @@ const NewsDetail = ({ newsDetail, getNewsDetail }) => {
 
 const mapStateToProps = (state) => ({
   newsDetail: state.news.newsDetail,
+  loading: state.ui.loading,
 });
 
 export default connect(mapStateToProps, { getNewsDetail })(NewsDetail);

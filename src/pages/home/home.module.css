@@ -24,8 +24,8 @@ text-align: center;
     padding: 15px;
     margin: 10px;
     border-radius: 5px;
-    border: 1px solid #6c7ac9;
-    color: #6c7ac9;
+    border: 1px solid #292828;
+    color: #292828;
 }
 
 .paginationLink {
@@ -33,8 +33,8 @@ text-align: center;
 }
 
 .paginationLinkActive a {
-    color: #fff;
-    background: #6c7ac9;
+    color: #fff !important;
+    background: #292828;
 }
 
 .paginationLinkDisabled a {
@@ -60,16 +60,26 @@ text-align: center;
     flex: 0 0 32%;
 }
 
-@media (max-width: 780px) {
+.searchBar{
+    width: 415px;
+}
+
+@media (max-width: 760px) {
     .newsCard {
       flex: 0 0 49%; /* Show 1 card per row on mobile screens */
+    }
+    .searchBar{
+        width: 100%;
     }
 }
 
 
 @media (max-width: 576px) {
+    .searchBar{
+        width: 100%;
+    }
     .newsCard {
-      flex: 0 0 100%; /* Show 1 card per row on mobile screens */
+      flex: 0 0 100%; /* Show 1 card pe5r row on mobile screens */
     }
     .pagination{
         padding: 0px;

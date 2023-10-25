@@ -17,6 +17,7 @@ const NewsFilter = ({
     category_id: filterValues?.category_id || null,
     source_id: filterValues?.source_id || null,
     author_name: filterValues?.author_name || null,
+    date: filterValues?.date || "",
   };
 
   return (
@@ -63,6 +64,19 @@ const NewsFilter = ({
                   initialValue={values.author_name}
                   options={authors}
                   handleChange={setFieldValue}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label" htmlFor="date">
+                  Select Publish Date
+                </label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  className="form-control"
+                  value={values.date}
+                  onChange={(e) => setFieldValue("date", e.target.value)}
                 />
               </div>
               <div className="d-flex flex-row justify-content-between">

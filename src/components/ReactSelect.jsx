@@ -16,7 +16,6 @@ const ReactSelect = (props) => {
   } = props;
 
   const onChange = (selectedOption) => {
-    console.log(selectedOption);
     if (handleChange) {
       handleChange(
         name,

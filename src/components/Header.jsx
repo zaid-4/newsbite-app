@@ -4,9 +4,8 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
 
-export const Header = ({ isAuthenticated, onLogout }) => {
+export const Header = ({ isAuthenticated, user, onLogout }) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const toggleProfileDropdown = () => {
@@ -19,7 +18,12 @@ export const Header = ({ isAuthenticated, onLogout }) => {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar
+      expand="lg"
+      className="bg-body-tertiary"
+      bg="dark"
+      data-bs-theme="dark"
+    >
       <Container>
         <Navbar.Brand as={Link} to="/">
           NewsBite
@@ -32,17 +36,11 @@ export const Header = ({ isAuthenticated, onLogout }) => {
             </Nav.Link>
           </Nav>
           <Nav className="ml-auto">
-            {" "}
-            {/* Right-aligned items */}
             {isAuthenticated ? (
               <>
                 <NavDropdown
                   title={
-                    <FaUserCircle
-                      size={24}
-                      onClick={toggleProfileDropdown}
-                      style={{ cursor: "pointer" }}
-                    />
+                    <div className="avatar">{user?.name[0].toUpperCase()}</div>
                   }
                   id="profile-dropdown"
                   show={showProfileDropdown}

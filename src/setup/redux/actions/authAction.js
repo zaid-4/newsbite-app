@@ -7,6 +7,7 @@ import {
 } from "../actionTypes";
 import axios from "axios";
 import configData from "../../../Config.json";
+import { toast } from "react-toastify";
 
 const API_URL = configData.SERVER_URL;
 export const LOGIN_URL = `${API_URL}/login`;
@@ -28,8 +29,9 @@ export const login = (values) => {
         return true;
       }
     } catch (e) {
-      const error = await e.message;
-      console.log("Request Error", error);
+      const error = await e.response.data.message;
+      toast.error("Error! Invalid email or password");
+      toast.error(`Error! ${error}`);
       dispatch({ type: SET_LOADING, payload: false });
       return false;
     }
@@ -46,11 +48,12 @@ export const register = (values) => {
       if (res) {
         await dispatch({ type: LOGIN, payload: res });
         await dispatch({ type: SET_LOADING, payload: false });
+        await toast.success("Registration Completed Successfully!");
         return true;
       }
     } catch (e) {
-      const error = await e.message;
-      console.log("Request Error", error);
+      const error = await e.response.data.message;
+      toast.error(`Error! ${error}`);
       dispatch({ type: SET_LOADING, payload: false });
       return false;
     }
@@ -67,11 +70,12 @@ export const updateUserProfile = (values) => {
       if (res) {
         await dispatch({ type: UPDATE_USER_PROFILE, payload: res });
         await dispatch({ type: SET_LOADING, payload: false });
+        await toast.success("Success! Profile Updated.");
         return true;
       }
     } catch (e) {
-      const error = await e.message;
-      console.log("Request Error", error);
+      const error = await e.response.data.message;
+      toast.error(`Error! ${error}`);
       dispatch({ type: SET_LOADING, payload: false });
       return false;
     }
@@ -88,11 +92,12 @@ export const updateUserPrefrences = (values) => {
       if (res) {
         await dispatch({ type: UPDATE_USER_PROFILE, payload: res });
         await dispatch({ type: SET_LOADING, payload: false });
+        await toast.success("Success! News Prefrences updated");
         return true;
       }
     } catch (e) {
-      const error = await e.message;
-      console.log("Request Error", error);
+      const error = await e.response.data.message;
+      toast.error(`Error! ${error}`);
       dispatch({ type: SET_LOADING, payload: false });
       return false;
     }
@@ -111,8 +116,8 @@ export const logout = () => {
         return true;
       }
     } catch (e) {
-      const error = await e.message;
-      console.log("Request Error", error);
+      const error = await e.response.data.message;
+      toast.error(`Error! ${error}`);
       dispatch({ type: SET_LOADING, payload: false });
       return false;
     }
