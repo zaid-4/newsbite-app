@@ -1,145 +1,117 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { connect } from "react-redux";
 import { updateUserProfile } from "../setup/redux/actions/authAction";
+import { Button } from "react-bootstrap";
+import { MdOutlineKeyboardBackspace as BackArrow } from "react-icons/md";
 
 const UserProfile = ({ user, updateUserProfile }) => {
-  const initialValues = {
-    name: user.name,
-    email: user.email,
-    oldPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
-  };
-
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
-    oldPassword: Yup.string(),
-    newPassword: Yup.string().min(
-      6,
-      "New Password must be at least 6 characters"
+    old_password: Yup.string(),
+    new_password: Yup.string().min(
+      8,
+      "New Password must be at least 8 characters"
     ),
-    confirmNewPassword: Yup.string().when("newPassword", {
-      is: (newPassword) => newPassword && newPassword.length > 0,
-      then: Yup.string()
-        .oneOf([Yup.ref("newPassword")], "Passwords must match")
-        .required("Confirm New Password is required"),
-    }),
+    confirm_new_password: Yup.string().oneOf(
+      [Yup.ref("new_password"), null],
+      "New Password must match"
+    ),
   });
 
+  const navigate = useNavigate();
+
+  const initialValues = {
+    name: user.name,
+    email: user.email,
+    old_password: "",
+    new_password: "",
+    confirm_new_password: "",
+  };
+
   const onSubmit = (values) => {
-    // Call the updateUserProfile action with the updated user data
-    updateUserProfile(user?.id, values);
+    if (values.old_password === "") delete values.old_password;
+    if (values.new_password === "") delete values.new_password;
+    if (values.confirm_new_password === "") delete values.confirm_new_password;
+    updateUserProfile(values);
   };
 
   return (
     <div className="container">
       <h2>User Profile</h2>
+      <div className="w-100 text-start mb-3">
+        <Button variant="secondary" onClick={() => navigate(-1)}>
+          <BackArrow size={24} style={{ cursor: "pointer" }} /> {"Back"}
+        </Button>
+      </div>
       <div className="row justify-content-center align-items-center">
-        <div className="col-md-6">
+        <div className="col-md-6 text-start">
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >
-            <Form>
-              <div className="mb-3">
-                <label htmlFor="name" className="form-label">
-                  Name
-                </label>
-                <Field
-                  type="text"
-                  id="name"
-                  name="name"
-                  className="form-control"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-danger"
-                />
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  Email
-                </label>
-                <Field
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="form-control"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-danger"
-                />
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="oldPassword" className="form-label">
-                  Old Password
-                </label>
-                <Field
+            {({ resetForm }) => (
+              <Form>
+                <FormField label="Name" name="name" type="text" />
+                <FormField label="Email" name="email" type="email" />
+                <FormField
+                  label="Old Password"
+                  name="old_password"
                   type="password"
-                  id="oldPassword"
-                  name="oldPassword"
-                  className="form-control"
                 />
-                <ErrorMessage
-                  name="oldPassword"
-                  component="div"
-                  className="text-danger"
-                />
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="newPassword" className="form-label">
-                  New Password
-                </label>
-                <Field
+                <FormField
+                  label="New Password"
+                  name="new_password"
                   type="password"
-                  id="newPassword"
-                  name="newPassword"
-                  className="form-control"
                 />
-                <ErrorMessage
-                  name="newPassword"
-                  component="div"
-                  className="text-danger"
-                />
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="confirmNewPassword" className="form-label">
-                  Confirm New Password
-                </label>
-                <Field
+                <FormField
+                  label="Confirm New Password"
+                  name="confirm_new_password"
                   type="password"
-                  id="confirmNewPassword"
-                  name="confirmNewPassword"
-                  className="form-control"
                 />
-                <ErrorMessage
-                  name="confirmNewPassword"
-                  component="div"
-                  className="text-danger"
-                />
-              </div>
 
-              <button type="submit" className="btn btn-primary">
-                Update Profile
-              </button>
-            </Form>
+                <div className="d-flex flex-row justify-content-between">
+                  <Button type="submit" variant="primary">
+                    Update Profile
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => {
+                      resetForm(initialValues);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </Form>
+            )}
           </Formik>
         </div>
       </div>
     </div>
   );
 };
+
+const FormField = ({ label, name, type }) => (
+  <div className="mb-3">
+    <label htmlFor={name} className="form-label">
+      {label}
+    </label>
+    <Field
+      type={type}
+      id={name}
+      name={name}
+      className="form-control"
+      autoComplete="off"
+    />
+    <ErrorMessage name={name} component="div" className="text-danger" />
+  </div>
+);
 
 const mapStateToProps = (state) => {
   return {

@@ -3,27 +3,28 @@ import {
   GET_NEWS_DETAIL,
   SET_LOADING,
   SET_PAGINATION,
-  GET_CATEGORIES_AND_SOURCES,
+  GET_NEWS_META,
 } from "../actionTypes";
 import axios from "axios";
+import configData from "../../../Config.json";
 
-const API_URL = "http://127.0.0.1:8000/api";
-export const GET_NEWS_URL = `${API_URL}/news`;
+const API_URL = configData.SERVER_URL;
+
 export const GET_NEWS_DETAIL_URL = `${API_URL}/news`;
-export const GET_CATEGORIES_AND_SOURCES_URL = `${API_URL}/categories-sources`;
+export const GET_NEWS_META_URL = `${API_URL}/news-meta`;
 
 // Action creators
 
-export const getAllNews = (params) => {
-  console.log(params);
+export const getAllNews = (params, isAuthorized) => {
   return async (dispatch) => {
     try {
       dispatch({ type: SET_LOADING, payload: true });
       const res = await axios
-        .get(GET_NEWS_URL, {
+        .get(`${API_URL}/${isAuthorized ? "news" : "all-news"}`, {
           params: params,
         })
         .then((res) => res.data);
+      console.log("RES", res.data);
       if (res) {
         const paginationData = {
           currentPage: res.current_page,
@@ -44,12 +45,12 @@ export const getAllNews = (params) => {
   };
 };
 
-export const getNewsDetail = (id) => {
+export const getNewsDetail = (id, isAuthorized) => {
   return async (dispatch) => {
     try {
       dispatch({ type: SET_LOADING, payload: true });
       const res = await axios
-        .get(`${GET_NEWS_DETAIL_URL}/${id}`)
+        .get(`${API_URL}/${isAuthorized ? "news" : "all-news"}/${id}`)
         .then((res) => res.data);
       if (res) {
         await dispatch({ type: GET_NEWS_DETAIL, payload: res.news });
@@ -65,15 +66,17 @@ export const getNewsDetail = (id) => {
   };
 };
 
-export const getAllCategoriesAndSources = () => {
+export const getNewsMeta = (values, isAuthorized) => {
   return async (dispatch) => {
     try {
       dispatch({ type: SET_LOADING, payload: true });
       const res = await axios
-        .get(GET_CATEGORIES_AND_SOURCES_URL)
+        .get(`${API_URL}/${isAuthorized ? "news-meta" : "all-news-meta"}`, {
+          params: values,
+        })
         .then((res) => res.data);
       if (res) {
-        await dispatch({ type: GET_CATEGORIES_AND_SOURCES, payload: res });
+        await dispatch({ type: GET_NEWS_META, payload: res });
         await dispatch({ type: SET_LOADING, payload: false });
         return true;
       }

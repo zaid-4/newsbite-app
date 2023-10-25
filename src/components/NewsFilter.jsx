@@ -1,13 +1,14 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { Formik, Form, useField } from "formik";
+import { Formik, Form } from "formik";
 import { ReactSelect } from "./ReactSelect";
 
 const NewsFilter = ({
   filterValues,
   categories,
   sources,
+  authors,
   show,
   onHide,
   onSubmit,
@@ -15,8 +16,9 @@ const NewsFilter = ({
   const initialValues = {
     category_id: filterValues?.category_id || null,
     source_id: filterValues?.source_id || null,
-    author_name: filterValues?.author_name || "",
+    author_name: filterValues?.author_name || null,
   };
+
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
@@ -28,7 +30,7 @@ const NewsFilter = ({
           initialValues={initialValues}
           onSubmit={onSubmit}
         >
-          {({ setFieldValue, values }) => (
+          {({ setFieldValue, values, resetForm }) => (
             <Form>
               <div className="mb-3">
                 <ReactSelect
@@ -44,7 +46,7 @@ const NewsFilter = ({
               <div className="mb-3">
                 <ReactSelect
                   name="source_id"
-                  label="Select Category"
+                  label="Select Source"
                   isSearchable
                   isClearable
                   initialValue={values.source_id}
@@ -53,27 +55,37 @@ const NewsFilter = ({
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="author_name" className="form-label">
-                  Author Name
-                </label>
-                <TextField name="author_name" />
+                <ReactSelect
+                  name="source_id"
+                  label="Select Author"
+                  isSearchable
+                  isClearable
+                  initialValue={values.author_name}
+                  options={authors}
+                  handleChange={setFieldValue}
+                />
               </div>
-
-              <Button type="submit" variant="primary">
-                Apply Filters
-              </Button>
+              <div className="d-flex flex-row justify-content-between">
+                <Button type="submit" variant="primary">
+                  Apply Filters
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    resetForm(initialValues);
+                    onSubmit(null);
+                  }}
+                >
+                  Reset
+                </Button>
+              </div>
             </Form>
           )}
         </Formik>
       </Modal.Body>
     </Modal>
   );
-};
-
-const TextField = ({ name }) => {
-  const [field] = useField(name);
-
-  return <input {...field} className="form-control" />;
 };
 
 export default NewsFilter;

@@ -36,15 +36,6 @@ export const Header = ({ isAuthenticated, onLogout }) => {
             {/* Right-aligned items */}
             {isAuthenticated ? (
               <>
-                {/* <Form className="d-flex">
-                  <Form.Control
-                    type="search"
-                    placeholder="Search"
-                    className="me-2"
-                    aria-label="Search"
-                  />
-                  <Button variant="outline-success">Search</Button>
-                </Form> */}
                 <NavDropdown
                   title={
                     <FaUserCircle
@@ -55,6 +46,7 @@ export const Header = ({ isAuthenticated, onLogout }) => {
                   }
                   id="profile-dropdown"
                   show={showProfileDropdown}
+                  onClick={toggleProfileDropdown}
                 >
                   <NavDropdown.Item
                     onClick={toggleProfileDropdown}
@@ -68,7 +60,7 @@ export const Header = ({ isAuthenticated, onLogout }) => {
                     as={Link}
                     to="/preferences"
                   >
-                    Preferences
+                    News Preferences
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handleLogout} as={Link} to="/">
