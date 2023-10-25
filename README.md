@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# NewsBite - A React App
+Welcome to the take-home challenge for the FullStack web developer position. The challenge is to build a news aggregator website that pulls articles from various sources and displays them in a clean, easy-to-read format.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Getting Started
 
-## Available Scripts
+### Without Docker
 
-In the project directory, you can run:
+To run the app without Docker, follow these steps:
 
-### `npm start`
+1. Clone this repository to your local machine.
+2. Open your terminal and navigate to the project directory.
+3. Install the necessary dependencies by running:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```shell
+   npm install
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+4. Setup the Server API, default is [http://localhost:8000], you can change it with your server in `Config.json`
 
-### `npm test`
+```shell
+    {
+        "SERVER_URL": "http://127.0.0.1:8000/api"
+    }
+```
+5. Start the Server
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```shell
+   npm start
+```
 
-### `npm run build`
+### With Docker
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+To run the app with Docker, follow these steps:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone this repository to your local machine.
+2. Open your terminal and navigate to the project directory.
+3. Build the Docker image using the provided Dockerfile:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```shell
+   sudo docker build -t newsbite-app .
+```
 
-### `npm run eject`
+4. Once the image is built, you can run the app in a Docker container:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```shell
+    sudo docker run -p 3000:3000 newsbite-app
+```
+5. This will start the app in a Docker container, and you can access it in your web browser at [`http://localhost:3000`].
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
